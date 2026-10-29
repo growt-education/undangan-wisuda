@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Undangan Wisuda – Wa Ode Sela, S.E.</title>
+  <meta name="description" content="Undangan syukuran wisuda Wa Ode Sela, S.E. – Senin, 2 November 2026.">
+  <meta property="og:title" content="Undangan Wisuda – Wa Ode Sela, S.E.">
+  <meta property="og:image" content="assets/img/gambar.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400;1,500&family=Great+Vibes&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="is-locked">
+
+  <!-- Ikon dipakai ulang lewat <use>, jadi cukup ditulis sekali -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-cap" viewBox="0 0 48 32"><path d="M24 2 2 12l22 10 22-10z" fill="currentColor"/><path d="M12 17v8c0 3 6 6 12 6s12-3 12-6v-8l-12 5.5z" fill="currentColor"/><path d="M42 14v12" stroke="currentColor" stroke-width="2"/><circle cx="42" cy="28" r="2" fill="currentColor"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M8 14h2M14 14h2M8 17h2M14 17h2"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 21s-6-5.5-6-10a6 6 0 1 1 12 0c0 4.5-6 10-6 10z"/><circle cx="12" cy="11" r="2"/></symbol>
+    <symbol id="i-map" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M3 7l6-2 6 2 6-2v12l-6 2-6-2-6 2zM9 5v12M15 7v12"/></symbol>
+  </svg>
+
+  <!-- FRAME 1 · COVER -->
+  <section id="cover" class="cover" aria-label="Sampul undangan">
+    <div class="cover__inner">
+      <p class="cover__label">Undangan Wisuda</p>
+      <h1 class="cover__name gold-text" data-bind="graduate.name">Wa Ode Sela</h1>
+      <hr class="rule rule--fade">
+      <p class="cover__to">Kepada Yth.</p>
+      <p class="cover__guest" id="guestName">Bapak/Ibu/Saudara/i</p>
+      <button type="button" class="btn-gold" id="openBtn">Buka Undangan</button>
+    </div>
+  </section>
+
+  <main id="invitation" class="page">
+
+    <!-- FRAME 2 · HERO -->
+    <section class="frame hero" id="hero">
+      <img class="hero__photo" src="assets/img/gambar.jpg" alt="Foto wisuda Wa Ode Sela" width="828" height="1104">
+      <div class="hero__text">
+        <p class="spaced">A Special Moment</p>
+        <h2 class="hero__title"><span class="hero__sub gold-text">Undangan</span><span class="hero__big gold-text">Wisuda</span></h2>
+        <div class="divider"><svg class="icon-cap"><use href="#i-cap"/></svg></div>
+        <p class="hero__name gold-text" data-bind="graduate.nameCaps">WA ODE SELA</p>
+        <p class="hero__degree" data-bind="graduate.degree">Sarjana Ekonomi</p>
+        <p class="hero__uni" data-bind="graduate.university">Universitas Pattimura</p>
+        <p class="spaced spaced--sm" data-bind="event.dateShort">02 November 2026</p>
+      </div>
+    </section>
+
+    <!-- FRAME 3 · SYUKUR -->
+    <section class="frame syukur" id="syukur">
+      <svg class="icon-cap"><use href="#i-cap"/></svg>
+      <p class="spaced">Undangan</p>
+      <h2 class="syukur__title">Dengan Penuh<span class="syukur__script gold-text">Rasa Syukur</span></h2>
+      <div class="syukur__body">
+        <p>Dengan penuh rasa syukur kepada Tuhan Yang Maha Esa, saya mengundang keluarga, sahabat, dan orang-orang terkasih untuk hadir dalam acara syukuran wisuda saya.</p>
+        <p>Merupakan kebahagiaan dan kehormatan bagi saya apabila Bapak/Ibu/Saudara/i berkenan hadir untuk berbagi kebahagiaan serta memberikan doa restu atas pencapaian pendidikan ini.</p>
+      </div>
+      <div class="divider"><span class="diamond"></span></div>
+    </section>
+
+    <!-- FRAME 4 · DETAIL ACARA -->
+    <section class="frame detail" id="detail">
+      <svg class="icon-cap"><use href="#i-cap"/></svg>
+      <h2 class="detail__title gold-text">Detail Acara</h2>
+      <p class="spaced spaced--sm">Waktu · Tempat · Lokasi</p>
+      <div class="divider"><span class="diamond"></span></div>
+      <ul class="detail__list">
+        <li><span class="ring"><svg><use href="#i-calendar"/></svg></span><div><h3>Hari / Tanggal</h3><p data-bind="event.date"></p></div></li>
+        <li><span class="ring"><svg><use href="#i-clock"/></svg></span><div><h3>Waktu</h3><p data-bind="event.time"></p></div></li>
+        <li><span class="ring"><svg><use href="#i-pin"/></svg></span><div><h3>Tempat</h3><p data-bind="event.place"></p></div></li>
+      </ul>
+      <a class="btn-gold btn-gold--ghost" id="mapsLink" href="#" target="_blank" rel="noopener"><svg><use href="#i-map"/></svg>Lihat Lokasi</a>
+    </section>
+
+    <!-- FRAME 5 · DOA & UCAPAN (Google Form + Sheet) -->
+    <section class="guestbook" id="doa">
+      <h2 class="guestbook__title gold-text">Doa &amp; Ucapan</h2>
+      <div class="guestbook__card">
+        <form id="wishForm" novalidate>
+          <input type="text" id="fName" name="name" placeholder="Nama" maxlength="60" autocomplete="name" required>
+          <textarea id="fMessage" name="message" placeholder="Ucapan" rows="4" maxlength="500" required></textarea>
+          <select id="fAttend" name="attendance" required>
+            <option value="" disabled selected>Konfirmasi Kehadiran</option>
+          </select>
+          <button type="submit" class="btn-gold btn-gold--sm" id="sendBtn">Kirim</button>
+          <p class="form__status" id="formStatus" role="status" aria-live="polite"></p>
+        </form>
+        <ul class="wishes" id="wishList" aria-live="polite"></ul>
+        <nav class="pager" id="pager" aria-label="Halaman ucapan" hidden></nav>
+      </div>
+    </section>
+
+    <!-- FRAME 6 · PENUTUP -->
+    <section class="frame closing" id="penutup">
+      <figure class="closing__photo"><img src="assets/img/gambar.jpg" alt="Wa Ode Sela mengenakan toga" loading="lazy"></figure>
+      <p class="closing__text">Merupakan suatu kehormatan dan kebahagiaan bagi saya atas kehadiran serta doa restu Bapak/Ibu/Saudara/i.</p>
+      <div class="divider"><span class="diamond"></span></div>
+      <p class="closing__thanks">Terima Kasih,</p>
+      <p class="closing__name gold-text" data-bind="graduate.nameFullCaps">WA ODE SELA, S.E.</p>
+    </section>
+
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
