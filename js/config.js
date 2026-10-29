@@ -22,17 +22,20 @@ const CONFIG = {
 
   /* Google Form: tempat ucapan dikirim */
   form: {
-    id: "1FAIpQLScXBceY8nPegv5_afE_ER0_kxBBYcxsv5QpcjLEN_xf54Xgo",
+    id: "1FAIpQLScXBceY8nPegv5_afE_ER0_kxBBYcxsv5QpcjLEN_xf54XgoQ",
     // ISI: ID tiap pertanyaan, contoh "entry.1234567890" (cara mencarinya ada di penjelasan)
-    entries: { name: "", message: "", attendance: "" },
+    entries: {
+      name: "732439350", 
+      message: "386619007", 
+      attendance: "1020708778" },
     // Teks harus SAMA PERSIS dengan opsi pertanyaan "Konfirmasi Kehadiran" di Google Form
     attendanceOptions: ["Hadir", "Tidak Hadir", "Masih Ragu"]
   },
 
   /* Google Sheet hasil Form: sumber daftar ucapan yang ditampilkan */
   sheet: {
-    id: "",   // ISI: ID spreadsheet (bagian antara /d/ dan /edit pada URL-nya)
-    gid: "0"  // ID tab respons (angka setelah gid= pada URL)
+    id: "1Z5NB6f0BqWhxrv6gVdmt1HZIo6eTNY8YkzBJVu-Y95M",   // ISI: ID spreadsheet (bagian antara /d/ dan /edit pada URL-nya)
+    gid: "424702802"  // ID tab respons (angka setelah gid= pada URL)
   },
 
   wishesPerPage: 4

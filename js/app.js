@@ -162,8 +162,9 @@
       btn.disabled = true;
       setStatus("Mengirim…");
       try {
-        // no-cors: browser boleh mengirim ke domain Google, tetapi balasannya tidak bisa dibaca
-        await fetch(`https://docs.google.com/forms/d/e/${id}/formResponse`, { method: "POST", mode: "no-cors", body });
+        // GET + no-cors: permintaan yang sama dengan tes langsung di browser (terbukti merekam respons).
+        // no-cors: browser boleh mengirim ke domain Google, tetapi balasannya tidak bisa dibaca.
+        await fetch(`https://docs.google.com/forms/d/e/${id}/formResponse?${body}`, { mode: "no-cors" });
         state.items.unshift({ name, text: message, time: new Date() }); // tampilkan langsung
         state.page = 1;
         render();
