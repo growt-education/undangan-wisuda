@@ -25,9 +25,9 @@ const CONFIG = {
     id: "1FAIpQLScXBceY8nPegv5_afE_ER0_kxBBYcxsv5QpcjLEN_xf54XgoQ",
     // ISI: ID tiap pertanyaan, contoh "entry.1234567890" (cara mencarinya ada di penjelasan)
     entries: {
-      name: "732439350", 
-      message: "386619007", 
-      attendance: "1020708778" },
+      name: "entry.732439350", 
+      message: "entry.386619007", 
+      attendance: "entry.1020708778" },
     // Teks harus SAMA PERSIS dengan opsi pertanyaan "Konfirmasi Kehadiran" di Google Form
     attendanceOptions: ["Hadir", "Tidak Hadir", "Masih Ragu"]
   },

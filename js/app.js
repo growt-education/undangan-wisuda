@@ -145,7 +145,33 @@
     el.textContent = msg;
     el.classList.toggle("is-error", !!isError);
   }
+/* Kirim ke Google Form lewat POST ke iframe tersembunyi (tanpa CORS) */
+  function postToGoogleForm(id, fields) {
+    return new Promise((resolve) => {
+      const iframe = document.createElement("iframe");
+      iframe.name = "gformTarget";
+      iframe.hidden = true;
 
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = `https://docs.google.com/forms/d/e/${id}/formResponse`;
+      form.target = iframe.name;
+      Object.entries(fields).forEach(([k, v]) => {
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = k;
+        input.value = v;
+        form.append(input);
+      });
+
+      document.body.append(iframe, form);
+      form.submit();
+
+      // Jangan hapus iframe cepat-cepat: menghapusnya membatalkan pengiriman.
+      setTimeout(resolve, 1500);
+      setTimeout(() => { iframe.remove(); form.remove(); }, 15000);
+    });
+  }
   function setupForm() {
     $("#wishForm").addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -157,14 +183,12 @@
       if (!name || !message || !attendance) return setStatus("Lengkapi nama, ucapan, dan konfirmasi kehadiran.", true);
       if (!entries.name || !entries.message || !entries.attendance) return setStatus("Formulir belum disambungkan ke Google Form (isi entries di config.js).", true);
 
-      const body = new URLSearchParams({ [entries.name]: name, [entries.message]: message, [entries.attendance]: attendance });
+      const fields = { [entries.name]: name, [entries.message]: message, [entries.attendance]: attendance };
       const btn = $("#sendBtn");
       btn.disabled = true;
       setStatus("Mengirim…");
       try {
-        // GET + no-cors: permintaan yang sama dengan tes langsung di browser (terbukti merekam respons).
-        // no-cors: browser boleh mengirim ke domain Google, tetapi balasannya tidak bisa dibaca.
-        await fetch(`https://docs.google.com/forms/d/e/${id}/formResponse?${body}`, { mode: "no-cors" });
+        await postToGoogleForm(id, fields);
         state.items.unshift({ name, text: message, time: new Date() }); // tampilkan langsung
         state.page = 1;
         render();
