@@ -12,7 +12,7 @@ const CONFIG = {
   event: {
     dateShort: "02 November 2026",
     date: "Senin, 2 November 2026",
-    time: "Pukul 13.00 WIT – selesai",
+    time: "Pukul 16.00 WIT – selesai",
     place: "Asrama Sulawesi Tenggara, Jl. Wailela Atas"
   },
 
