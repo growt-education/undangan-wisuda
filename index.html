@@ -21,13 +21,16 @@
     <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
     <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 21s-6-5.5-6-10a6 6 0 1 1 12 0c0 4.5-6 10-6 10z"/><circle cx="12" cy="11" r="2"/></symbol>
     <symbol id="i-map" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M3 7l6-2 6 2 6-2v12l-6 2-6-2-6 2zM9 5v12M15 7v12"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M7 5h4v14H7zM13 5h4v14h-4z" fill="currentColor"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6"/></g><circle cx="12" cy="7.6" r="1.2" fill="currentColor"/></symbol>
   </svg>
 
   <!-- FRAME 1 · COVER -->
   <section id="cover" class="cover" aria-label="Sampul undangan">
     <div class="cover__inner">
       <p class="cover__label">Undangan Wisuda</p>
-      <h1 class="cover__name gold-text" data-bind="graduate.name">Wa Ode Sela</h1>
+      <h1 class="cover__name gold-text" data-bind="graduate.name">Wa Ode Sela, S.E.</h1>
       <hr class="rule rule--fade">
       <p class="cover__to">Kepada Yth.</p>
       <p class="cover__guest" id="guestName">Bapak/Ibu/Saudara/i</p>
@@ -39,12 +42,12 @@
 
     <!-- FRAME 2 · HERO -->
     <section class="frame hero" id="hero">
-      <img class="hero__photo" src="assets/img/gambar.jpg" alt="Foto wisuda Wa Ode Sela" width="828" height="1104">
+      <img class="hero__photo" src="assets/img/gambar.jpg" alt="Foto wisuda Wa Ode Sela, S.E." width="828" height="1104">
       <div class="hero__text">
         <p class="spaced">A Special Moment</p>
         <h2 class="hero__title"><span class="hero__sub gold-text">Undangan</span><span class="hero__big gold-text">Wisuda</span></h2>
         <div class="divider"><svg class="icon-cap"><use href="#i-cap"/></svg></div>
-        <p class="hero__name gold-text" data-bind="graduate.nameCaps">WA ODE SELA</p>
+        <p class="hero__name gold-text" data-bind="graduate.name">Wa Ode Sela, S.E.</p>
         <p class="hero__degree" data-bind="graduate.degree">Sarjana Ekonomi</p>
         <p class="hero__uni" data-bind="graduate.university">Universitas Pattimura</p>
         <p class="spaced spaced--sm" data-bind="event.dateShort">02 November 2026</p>
@@ -97,14 +100,36 @@
 
     <!-- FRAME 6 · PENUTUP -->
     <section class="frame closing" id="penutup">
-      <figure class="closing__photo"><img src="assets/img/gambar.jpg" alt="Wa Ode Sela mengenakan toga" loading="lazy"></figure>
+      <figure class="closing__photo"><img src="assets/img/gambar.jpg" alt="Wa Ode Sela, S.E. mengenakan toga" loading="lazy"></figure>
       <p class="closing__text">Merupakan suatu kehormatan dan kebahagiaan bagi saya atas kehadiran serta doa restu Bapak/Ibu/Saudara/i.</p>
       <div class="divider"><span class="diamond"></span></div>
       <p class="closing__thanks">Terima Kasih,</p>
-      <p class="closing__name gold-text" data-bind="graduate.nameFullCaps">WA ODE SELA, S.E.</p>
+      <p class="closing__name gold-text" data-bind="graduate.name">Wa Ode Sela, S.E.</p>
     </section>
 
   </main>
+
+  <!-- Tiga ikon melayang: musik, peta, informasi -->
+  <div class="dock" id="dock" hidden>
+    <button type="button" class="dock__btn" id="musicBtn" aria-pressed="false" aria-label="Putar musik"><svg class="i-play"><use href="#i-play"/></svg><svg class="i-pause"><use href="#i-pause"/></svg></button>
+    <button type="button" class="dock__btn" id="mapBtn" aria-label="Lihat peta lokasi"><svg><use href="#i-pin"/></svg></button>
+    <button type="button" class="dock__btn" id="infoBtn" aria-label="Informasi kehadiran dan ucapan"><svg><use href="#i-info"/></svg></button>
+  </div>
+  <audio id="bgm" loop preload="none"></audio>
+
+  <dialog id="mapDialog" class="modal" aria-labelledby="mapTitle">
+    <div class="modal__head"><h2 id="mapTitle" class="gold-text">Lokasi Acara</h2><button type="button" class="modal__close" data-close aria-label="Tutup">&times;</button></div>
+    <p class="modal__place" data-bind="event.place"></p>
+    <iframe id="mapFrame" title="Peta lokasi acara" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+    <a class="btn-gold btn-gold--ghost" id="mapOpen" href="#" target="_blank" rel="noopener"><svg><use href="#i-map"/></svg>Buka di Google Maps</a>
+  </dialog>
+
+  <dialog id="infoDialog" class="modal" aria-labelledby="infoTitle">
+    <div class="modal__head"><h2 id="infoTitle" class="gold-text">Informasi Kehadiran</h2><button type="button" class="modal__close" data-close aria-label="Tutup">&times;</button></div>
+    <div class="stats" id="stats"></div>
+    <div class="tabs" id="tabs" role="tablist"></div>
+    <ul class="wishes" id="infoList"></ul>
+  </dialog>
 
   <script src="js/config.js"></script>
   <script src="js/app.js"></script>

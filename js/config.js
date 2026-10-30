@@ -4,9 +4,7 @@
 */
 const CONFIG = {
   graduate: {
-    name: "Wa Ode Sela",
-    nameCaps: "WA ODE SELA",
-    nameFullCaps: "WA ODE SELA, S.E.",
+    name: "Wa Ode Sela, S.E.",
     degree: "Sarjana Ekonomi",
     university: "Universitas Pattimura"
   },
@@ -19,15 +17,16 @@ const CONFIG = {
   },
 
   mapsUrl: "https://maps.app.goo.gl/cxaaCPBBTL3uxaGF6",
+  // Peta yang tampil langsung di website (koordinat Asrama Mahasiswa Sulawesi Tenggara)
+  mapsEmbedUrl: "https://maps.google.com/maps?q=-3.6538418,128.1839639&z=17&output=embed",
+
+  music: { src: "assets/audio/song.mp3", volume: 0.7, autoplay: true },
 
   /* Google Form: tempat ucapan dikirim */
   form: {
     id: "1FAIpQLScXBceY8nPegv5_afE_ER0_kxBBYcxsv5QpcjLEN_xf54XgoQ",
     // ISI: ID tiap pertanyaan, contoh "entry.1234567890" (cara mencarinya ada di penjelasan)
-    entries: {
-      name: "entry.732439350", 
-      message: "entry.386619007", 
-      attendance: "entry.1020708778" },
+    entries: { name: "entry.732439350", message: "entry.386619007", attendance: "entry.1020708778" },
     // Teks harus SAMA PERSIS dengan opsi pertanyaan "Konfirmasi Kehadiran" di Google Form
     attendanceOptions: ["Hadir", "Tidak Hadir", "Masih Ragu"]
   },
@@ -38,5 +37,8 @@ const CONFIG = {
     gid: "424702802"  // ID tab respons (angka setelah gid= pada URL)
   },
 
-  wishesPerPage: 4
+  wishesPerPage: 4,
+
+  /* true = tampilkan kotak diagnostik hijau di bawah daftar ucapan. Ubah ke false sebelum undangan dibagikan. */
+  debug: false
 };

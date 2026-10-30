@@ -16,6 +16,8 @@
       if (value != null) el.textContent = value;
     });
     $("#mapsLink").href = CONFIG.mapsUrl;
+    $("#mapOpen").href = CONFIG.mapsUrl;
+    document.title = `Undangan Wisuda – ${CONFIG.graduate.name}`;
   }
 
   /* 2. Nama tamu dari URL: index.html?to=Budi%20Santoso */
@@ -34,6 +36,8 @@
       cover.inert = true;
       document.body.classList.remove("is-locked");
       window.scrollTo(0, 0);
+      $("#dock").hidden = false;
+      startMusic(); // klik tombol = interaksi pengguna, saat browser mengizinkan musik otomatis
     });
   }
 
@@ -67,22 +71,62 @@
     return m ? new Date(+m[1], +m[2], +m[3], +m[4] || 0, +m[5] || 0, +m[6] || 0) : null;
   }
 
-  async function loadWishes() {
+  /* Diagnostik: kotak kecil di bawah daftar ucapan. Matikan dengan debug: false di config.js */
+  function setDebug(msg, isError) {
+    if (CONFIG.debug === false) return;
+    let el = $("#debugBox");
+    if (!el) {
+      el = document.createElement("p");
+      el.id = "debugBox";
+      el.style.cssText = "margin-top:1rem;font:12px/1.4 monospace;word-break:break-word";
+      $(".guestbook__card").append(el);
+    }
+    el.style.color = isError ? "#ff9d8a" : "#9fd8a0";
+    el.textContent = "[debug] " + msg;
+    console[isError ? "error" : "log"]("[undangan]", msg);
+  }
+
+  /* Baca semua baris Sheet: kolom A waktu, B nama, C ucapan, D kehadiran */
+  async function fetchSheet() {
     const { id, gid } = CONFIG.sheet;
-    if (!id) return render();
+    if (!id) throw new Error("sheet.id belum diisi di config.js");
+    const url = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:json&gid=${gid}`;
+    const text = await (await fetch(url)).text();
+    // Respons dibungkus fungsi JS; ambil hanya bagian JSON-nya
+    const json = JSON.parse(text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1));
+    return json.table.rows.map(({ c }) => ({
+      time: parseSheetDate(c[0]?.v),
+      name: c[1]?.v || "",
+      text: c[2]?.v || "",
+      attend: c[3]?.v || ""
+    }));
+  }
+
+  async function loadWishes() {
     try {
-      const url = `https://docs.google.com/spreadsheets/d/${id}/gviz/tq?tqx=out:json&gid=${gid}`;
-      const text = await (await fetch(url)).text();
-      // Respons dibungkus fungsi JS; ambil hanya bagian JSON-nya
-      const json = JSON.parse(text.slice(text.indexOf("{"), text.lastIndexOf("}") + 1));
-      state.items = json.table.rows
-        .map(({ c }) => ({ time: parseSheetDate(c[0]?.v), name: c[1]?.v || "", text: c[2]?.v || "" }))
-        .filter((i) => i.name && i.text)
-        .reverse(); // terbaru di atas
+      state.items = (await fetchSheet()).filter((i) => i.name && i.text).reverse(); // terbaru di atas
+      setDebug(`Sheet terbaca: ${state.items.length} ucapan.`);
     } catch (err) {
-      console.warn("Gagal memuat ucapan:", err);
+      setDebug("Gagal membaca Sheet: " + err.message, true);
     }
     render();
+  }
+
+  /* Satu item ucapan; withBadge menambah label kehadiran (dipakai di panel informasi) */
+  function wishNode(item, withBadge) {
+    const li = document.createElement("li");
+    li.className = "wish";
+    const avatar = Object.assign(document.createElement("div"), { className: "avatar", textContent: initials(item.name) });
+    const name = Object.assign(document.createElement("p"), { className: "wish__name", textContent: item.name });
+    if (withBadge && item.attend) name.append(Object.assign(document.createElement("span"), { className: "badge", textContent: item.attend }));
+    const body = document.createElement("div");
+    body.append(
+      name,
+      Object.assign(document.createElement("p"), { className: "wish__text", textContent: item.text }),
+      Object.assign(document.createElement("p"), { className: "wish__meta", textContent: timeAgo(item.time) })
+    );
+    li.append(avatar, body);
+    return li;
   }
 
   function render() {
@@ -99,19 +143,7 @@
       list.append(li);
     }
 
-    state.items.slice((state.page - 1) * per, state.page * per).forEach((item) => {
-      const li = document.createElement("li");
-      li.className = "wish";
-      const avatar = Object.assign(document.createElement("div"), { className: "avatar", textContent: initials(item.name) });
-      const body = document.createElement("div");
-      body.append(
-        Object.assign(document.createElement("p"), { className: "wish__name", textContent: item.name }),
-        Object.assign(document.createElement("p"), { className: "wish__text", textContent: item.text }),
-        Object.assign(document.createElement("p"), { className: "wish__meta", textContent: timeAgo(item.time) })
-      );
-      li.append(avatar, body);
-      list.append(li);
-    });
+    state.items.slice((state.page - 1) * per, state.page * per).forEach((item) => list.append(wishNode(item)));
     renderPager(pages);
   }
 
@@ -189,7 +221,7 @@
       setStatus("Mengirim…");
       try {
         await postToGoogleForm(id, fields);
-        state.items.unshift({ name, text: message, time: new Date() }); // tampilkan langsung
+        state.items.unshift({ name, text: message, attend: attendance, time: new Date() }); // tampilkan langsung
         state.page = 1;
         render();
         e.target.reset();
@@ -202,6 +234,84 @@
     });
   }
 
+  /* ===== Musik ===== */
+  const audio = $("#bgm");
+  function setupMusic() {
+    audio.src = (CONFIG.music && CONFIG.music.src) || "assets/audio/song.mp3";
+    audio.volume = CONFIG.music && CONFIG.music.volume != null ? CONFIG.music.volume : 0.7;
+    const btn = $("#musicBtn");
+    // Tampilan tombol mengikuti keadaan audio yang sebenarnya, bukan tebakan
+    const sync = () => {
+      btn.setAttribute("aria-pressed", String(!audio.paused));
+      btn.setAttribute("aria-label", audio.paused ? "Putar musik" : "Jeda musik");
+    };
+    audio.addEventListener("play", sync);
+    audio.addEventListener("pause", sync);
+    btn.addEventListener("click", () => (audio.paused ? audio.play().catch(() => {}) : audio.pause()));
+  }
+  function startMusic() {
+    if (!CONFIG.music || CONFIG.music.autoplay !== false) audio.play().catch(() => {});
+  }
+
+  /* ===== Peta & informasi (dialog bawaan browser: Esc menutup, fokus terkunci otomatis) ===== */
+  const DEFAULT_EMBED = "https://maps.google.com/maps?q=-3.6538418,128.1839639&z=17&output=embed";
+  let infoTab = "Semua";
+
+  function renderInfo() {
+    const opts = CONFIG.form.attendanceOptions;
+    const el = (tag, props) => Object.assign(document.createElement(tag), props);
+
+    const stats = $("#stats");
+    stats.style.gridTemplateColumns = `repeat(${opts.length}, 1fr)`;
+    stats.replaceChildren(...opts.map((o) => {
+      const box = el("div", { className: "stat" });
+      box.append(el("b", { textContent: state.items.filter((i) => i.attend === o).length }), el("span", { textContent: o }));
+      return box;
+    }));
+
+    $("#tabs").replaceChildren(...["Semua", ...opts].map((t) => {
+      const b = el("button", { type: "button", textContent: t });
+      b.setAttribute("role", "tab");
+      b.setAttribute("aria-selected", String(t === infoTab));
+      b.addEventListener("click", () => { infoTab = t; renderInfo(); });
+      return b;
+    }));
+
+    const list = $("#infoList");
+    const rows = infoTab === "Semua" ? state.items : state.items.filter((i) => i.attend === infoTab);
+    list.replaceChildren();
+    if (!rows.length) list.append(el("li", { className: "wishes__empty", textContent: "Belum ada data." }));
+    rows.forEach((i) => list.append(wishNode(i, true)));
+  }
+
+  async function openInfo() {
+    $("#infoDialog").showModal();
+    renderInfo();
+    try { // ambil data terbaru setiap panel dibuka
+      state.items = (await fetchSheet()).filter((i) => i.name && i.text).reverse();
+      renderInfo();
+      render();
+    } catch (err) {
+      setDebug("Gagal memperbarui informasi: " + err.message, true);
+    }
+  }
+
+  function setupDialogs() {
+    $("#mapBtn").addEventListener("click", () => {
+      const frame = $("#mapFrame");
+      if (!frame.getAttribute("src")) frame.src = CONFIG.mapsEmbedUrl || DEFAULT_EMBED; // dimuat saat pertama dibuka
+      $("#mapDialog").showModal();
+    });
+    $("#infoBtn").addEventListener("click", openInfo);
+    document.querySelectorAll("dialog").forEach((d) => {
+      d.addEventListener("click", (e) => {
+        const r = d.getBoundingClientRect();
+        const outside = e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom;
+        if (outside || e.target.closest("[data-close]")) d.close();
+      });
+    });
+  }
+
   function init() {
     bindText();
     setGuest();
@@ -209,6 +319,8 @@
     fillAttendance();
     setupPager();
     setupForm();
+    setupMusic();
+    setupDialogs();
     loadWishes();
   }
   init();
